@@ -49,3 +49,6 @@ Villa görsellerinin sayısı değişirse `js/villa.js` içindeki `DIS_COUNT` /
 
 Vercel projesi `casa-vera-oasis` bu depoya bağlıdır. Derleme ayarı
 `vercel.json` içinde açıkça belirtilmiştir (`npm run build` → `dist`).
+
+
+Production deployment branch: `main`.
