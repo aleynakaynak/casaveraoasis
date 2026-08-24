@@ -1,4 +1,5 @@
-import { VILLA_COUNT, PLOT_AREAS, HERO_POINTS, UNNUMBERED_POINT, villaHref, isSold } from './villa-data.js';
+import '../css/overrides.css';
+import { VILLA_COUNT, PLOT_AREAS, HERO_POINTS, SOLD_VILLAS, UNNUMBERED_SOLD_POINT, villaHref } from './villa-data.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const header = document.getElementById('header');
@@ -46,26 +47,25 @@ document.addEventListener('DOMContentLoaded', () => {
     lightbox.classList.remove('open');
     document.body.style.overflow = '';
   };
-  const pins = Array.from({ length: VILLA_COUNT }, (_, i) => {
+  const heroPins = Array.from({ length: VILLA_COUNT }, (_, i) => {
     const no = i + 1;
     const [x, y] = HERO_POINTS[no];
-    const sold = isSold(no);
-    const badge = sold
-      ? '<span data-tr="SATILDI" data-en="SOLD">SATILDI</span>'
-      : `<span>${PLOT_AREAS[no]} m²</span>`;
-    return `<a class="hero-pin${sold ? ' sold' : ''}" href="${villaHref(no)}" style="left:${x}%;top:${y}%" aria-label="Villa ${no} · ${PLOT_AREAS[no]} m²${sold ? ' · satıldı' : ''} · detayları görüntüle"><b>${no}</b>${badge}</a>`;
-  });
+    if (SOLD_VILLAS.has(no)) {
+      return `<div class="hero-pin sold" style="left:${x}%;top:${y}%" role="img" aria-label="Villa ${no} satıldı"><b>${no}</b><small data-tr="SATILDI" data-en="SOLD">SATILDI</small></div>`;
+    }
+    return `<a class="hero-pin" href="${villaHref(no)}" style="left:${x}%;top:${y}%" aria-label="Villa ${no} · ${PLOT_AREAS[no]} m² · detayları görüntüle"><b>${no}</b><span>${PLOT_AREAS[no]} m²</span></a>`;
+  }).join('');
 
-  // Numarasız bina: satışa çıkmayacağı için villa sayfası da yok.
-  const [ux, uy] = UNNUMBERED_POINT;
-  pins.push(`<span class="hero-pin sold no-number" style="left:${ux}%;top:${uy}%" aria-label="Numarasız villa · satıldı"><span data-tr="SATILDI" data-en="SOLD">SATILDI</span></span>`);
-
-  document.getElementById('heroHotspots').innerHTML = pins.join('');
+  const [soldX, soldY] = UNNUMBERED_SOLD_POINT;
+  const unnumberedSold = `<div class="hero-pin sold unnumbered" style="left:${soldX}%;top:${soldY}%" role="img" aria-label="Numarasız villa satıldı"><b data-tr="SATILDI" data-en="SOLD">SATILDI</b></div>`;
+  document.getElementById('heroHotspots').innerHTML = heroPins + unnumberedSold;
 
   document.getElementById('villaQuick').innerHTML = Array.from({ length: VILLA_COUNT }, (_, i) => {
     const no = i + 1;
-    const sold = isSold(no);
-    return `<a class="${sold ? 'sold' : ''}" href="${villaHref(no)}"${sold ? ' title="Satıldı"' : ''} aria-label="Villa ${no}${sold ? ' · satıldı' : ' detayları'}">${no}</a>`;
+    if (SOLD_VILLAS.has(no)) {
+      return `<span class="sold" aria-label="Villa ${no} satıldı"><b>${no}</b><small data-tr="SATILDI" data-en="SOLD">SATILDI</small></span>`;
+    }
+    return `<a href="${villaHref(no)}" aria-label="Villa ${no} detayları">${no}</a>`;
   }).join('');
   document.querySelectorAll('#galleryGrid figure').forEach(figure => figure.addEventListener('click', () => openLightbox(figure.querySelector('img').src)));
   document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
