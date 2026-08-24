@@ -1,179 +1,167 @@
-import { VILLA_COUNT, PLOTS, isSold } from './villa-data.js';
+// Villa detail page — villa selector, image viewer, galleries, lightbox
+import { VILLA_COUNT, PLOT_AREAS, isSold } from './villa-data.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const pad = (n) => String(n).padStart(2, '0');
-  const full = (set, i) => `/assets/img/${set}/${set}-${pad(i)}.webp`;
-  const thumb = (set, i) => `/assets/img/${set}/thumb/${set}-${pad(i)}.webp`;
 
+  const DIS_COUNT = 38;
+  const IC_COUNT = 20;
+
+  const pad = i => String(i).padStart(2, '0');
+  const src = (set, i) => `/assets/img/${set}/${set}-${pad(i)}.webp`;
+  const thumbSrc = (set, i) => `/assets/img/${set}/thumb/${set}-${pad(i)}.webp`;
   const SETS = {
-    dis: { label: 'Dış Cephe', count: 38 },
-    ic: { label: 'İç Dizayn', count: 20 },
+    dis: { label: 'Dış Cephe', count: DIS_COUNT },
+    ic:  { label: 'İç Dizayn', count: IC_COUNT }
   };
 
+  /* ---------- which villa? (from #vNN — hash survives every host & file://) ---------- */
   const chips = document.getElementById('villaChips');
-  const title = document.getElementById('villaTitle');
+  const villaTitle = document.getElementById('villaTitle');
   const specNo = document.getElementById('specNo');
   const specPlot = document.getElementById('specPlot');
   const soldBanner = document.getElementById('soldBanner');
 
-  /* ------------------------------------------------------ seçili villa */
-  function currentVilla() {
-    const n = parseInt(location.hash.replace(/^#v?/, ''), 10);
-    return Number.isInteger(n) && n >= 1 && n <= VILLA_COUNT ? n : 1;
+  function currentVilla(){
+    const raw = parseInt(location.hash.replace(/^#v?/, ''), 10);
+    return (Number.isInteger(raw) && raw >= 1 && raw <= VILLA_COUNT) ? raw : 1;
   }
 
-  function syncVilla() {
-    const n = currentVilla();
-    const no = pad(n);
-    const sold = isSold(n);
-
-    title.textContent = `VİLLA ${no}`;
-    specNo.textContent = no;
-    specPlot.textContent = `${PLOTS[n]} m²`;
-    document.title = `Villa ${no} | Casa Vera Oasis`;
-
-    soldBanner.hidden = !sold;
-    document.body.classList.toggle('villa-is-sold', sold);
-
-    chips.querySelectorAll('a').forEach((a) => {
-      a.classList.toggle('active', Number(a.dataset.no) === n);
+  function renderVilla(){
+    const no = currentVilla();
+    const label = String(no).padStart(2, '0');
+    villaTitle.textContent = `VİLLA ${label}`;
+    specNo.textContent = label;
+    specPlot.textContent = `${PLOT_AREAS[no]} m²`;
+    document.title = `Villa ${label} | Casa Vera Oasis`;
+    soldBanner.hidden = !isSold(no);
+    chips.querySelectorAll('a').forEach(a => {
+      a.classList.toggle('active', Number(a.dataset.no) === no);
     });
   }
 
   chips.innerHTML = Array.from({ length: VILLA_COUNT }, (_, i) => {
-    const n = i + 1;
-    const sold = isSold(n);
-    return (
-      `<a href="#v${pad(n)}" data-no="${n}" class="${sold ? 'sold' : ''}"` +
-      (sold ? ' title="Satıldı"' : '') +
-      `>${n}</a>`
-    );
+    const no = i + 1;
+    const n = String(no).padStart(2, '0');
+    const sold = isSold(no);
+    return `<a href="#v${n}" data-no="${no}" class="${sold ? 'sold' : ''}"${sold ? ' title="Satıldı"' : ''}>${no}</a>`;
   }).join('');
 
-  syncVilla();
-  window.addEventListener('hashchange', syncVilla);
+  renderVilla();
+  window.addEventListener('hashchange', renderVilla);
 
-  /* ------------------------------------------------------ görsel viewer */
+  /* ---------- image viewer ---------- */
   const viewerImg = document.getElementById('viewerImg');
-  const counter = document.getElementById('viewerCounter');
-  const thumbs = document.getElementById('viewerThumbs');
-  const tabs = document.getElementById('viewerTabs');
+  const viewerCounter = document.getElementById('viewerCounter');
+  const viewerThumbs = document.getElementById('viewerThumbs');
+  const viewerTabs = document.getElementById('viewerTabs');
 
-  let set = 'dis';
-  let index = 1;
+  let currentSet = 'dis';
+  let currentIndex = 1;
 
-  function renderThumbs() {
-    const { count } = SETS[set];
-    thumbs.innerHTML = Array.from({ length: count }, (_, i) => {
+  function renderThumbs(){
+    const { count } = SETS[currentSet];
+    viewerThumbs.innerHTML = Array.from({ length: count }, (_, i) => {
       const n = i + 1;
-      return (
-        `<img src="${thumb(set, n)}" data-i="${n}" alt="${SETS[set].label} ${n}"` +
-        ` loading="lazy"${n === index ? ' class="active"' : ''}>`
-      );
+      return `<img src="${thumbSrc(currentSet, n)}" data-i="${n}" alt="${SETS[currentSet].label} ${n}" loading="lazy"${n === currentIndex ? ' class="active"' : ''}>`;
     }).join('');
   }
 
-  function show(n) {
-    const { count, label } = SETS[set];
-    index = ((n - 1 + count) % count) + 1;
-
-    viewerImg.src = full(set, index);
-    viewerImg.alt = `${label} ${index}`;
-    counter.textContent = `${label} · ${index} / ${count}`;
-
-    thumbs.querySelectorAll('img').forEach((img) => {
-      img.classList.toggle('active', Number(img.dataset.i) === index);
+  function showImage(i){
+    const { count, label } = SETS[currentSet];
+    currentIndex = ((i - 1 + count) % count) + 1;
+    viewerImg.src = src(currentSet, currentIndex);
+    viewerImg.alt = `${label} ${currentIndex}`;
+    viewerCounter.textContent = `${label} · ${currentIndex} / ${count}`;
+    viewerThumbs.querySelectorAll('img').forEach(t => {
+      t.classList.toggle('active', Number(t.dataset.i) === currentIndex);
     });
-    thumbs.querySelector('img.active')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    const active = viewerThumbs.querySelector('img.active');
+    if (active) active.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
 
-  function selectSet(next) {
-    set = next;
+  function switchSet(set){
+    currentSet = set;
     renderThumbs();
-    show(1);
-    tabs.querySelectorAll('button').forEach((b) => b.classList.toggle('active', b.dataset.set === next));
+    showImage(1);
+    viewerTabs.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.set === set));
   }
 
-  document.getElementById('countDis').textContent = `(${SETS.dis.count})`;
-  document.getElementById('countIc').textContent = `(${SETS.ic.count})`;
+  document.getElementById('countDis').textContent = `(${DIS_COUNT})`;
+  document.getElementById('countIc').textContent = `(${IC_COUNT})`;
 
   renderThumbs();
-  show(1);
+  showImage(1);
 
-  tabs.querySelectorAll('button').forEach((b) =>
-    b.addEventListener('click', () => selectSet(b.dataset.set))
-  );
-  thumbs.addEventListener('click', (e) => {
-    if (e.target.tagName === 'IMG') show(Number(e.target.dataset.i));
+  viewerTabs.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => switchSet(btn.dataset.set));
   });
-  document.getElementById('viewerPrev').addEventListener('click', () => show(index - 1));
-  document.getElementById('viewerNext').addEventListener('click', () => show(index + 1));
+  viewerThumbs.addEventListener('click', e => {
+    if (e.target.tagName === 'IMG') showImage(Number(e.target.dataset.i));
+  });
+  document.getElementById('viewerPrev').addEventListener('click', () => showImage(currentIndex - 1));
+  document.getElementById('viewerNext').addEventListener('click', () => showImage(currentIndex + 1));
 
-  /* -------------------------------------------------------- tüm galeri */
-  function buildGrid(el, which) {
-    const { count, label } = SETS[which];
-    el.innerHTML = Array.from({ length: count }, (_, i) => {
+  /* ---------- full galleries ---------- */
+  function buildGrid(container, set){
+    const { count, label } = SETS[set];
+    container.innerHTML = Array.from({ length: count }, (_, i) => {
       const n = i + 1;
-      return (
-        `<figure data-src="${full(which, n)}" data-cap="${label} ${n}">` +
-        `<img data-src="${thumb(which, n)}" alt="${label} ${n}"></figure>`
-      );
+      return `<figure data-src="${src(set, n)}" data-cap="${label} ${n}">
+                <img data-src="${thumbSrc(set, n)}" alt="${label} ${n}">
+              </figure>`;
     }).join('');
   }
-
   buildGrid(document.getElementById('gridDis'), 'dis');
   buildGrid(document.getElementById('gridIc'), 'ic');
 
-  const lazy = new IntersectionObserver(
-    (entries) =>
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const img = entry.target;
-        img.src = img.dataset.src;
-        img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
-        lazy.unobserve(img);
-      }),
-    { rootMargin: '200px' }
-  );
-  document.querySelectorAll('.villa-grid img[data-src]').forEach((img) => lazy.observe(img));
+  const imgObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const img = entry.target;
+      img.src = img.dataset.src;
+      img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+      imgObserver.unobserve(img);
+    });
+  }, { rootMargin: '200px' });
+  document.querySelectorAll('.villa-grid img[data-src]').forEach(img => imgObserver.observe(img));
 
-  document.querySelectorAll('#villaTabs button').forEach((btn) =>
+  document.querySelectorAll('#villaTabs button').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('#villaTabs button').forEach((b) => b.classList.remove('active'));
+      document.querySelectorAll('#villaTabs button').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      document.querySelectorAll('.villa-grid-wrap').forEach((wrap) => {
-        wrap.classList.toggle('active', wrap.dataset.tabPanel === btn.dataset.tab);
+      document.querySelectorAll('.villa-grid-wrap').forEach(w => {
+        w.classList.toggle('active', w.dataset.tabPanel === btn.dataset.tab);
       });
-    })
-  );
+    });
+  });
 
-  /* ---------------------------------------------------------- lightbox */
+  /* ---------- lightbox ---------- */
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightboxImg');
   const lightboxCap = document.getElementById('lightboxCap');
 
-  const openLightbox = (src, cap) => {
-    lightboxImg.src = src;
-    lightboxCap.textContent = cap || '';
+  function openLightbox(imgSrc, caption){
+    lightboxImg.src = imgSrc;
+    lightboxCap.textContent = caption || '';
     lightbox.classList.add('is-open');
-  };
-  const closeLightbox = () => lightbox.classList.remove('is-open');
+  }
+  function closeLightbox(){ lightbox.classList.remove('is-open'); }
 
   document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) closeLightbox();
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.getElementById('viewerFull').addEventListener('click', () => {
+    openLightbox(viewerImg.src, `${SETS[currentSet].label} ${currentIndex}`);
   });
-  document.getElementById('viewerFull').addEventListener('click', () =>
-    openLightbox(viewerImg.src, `${SETS[set].label} ${index}`)
-  );
-  document.addEventListener('click', (e) => {
+  document.addEventListener('click', e => {
     const fig = e.target.closest('.villa-grid figure');
     if (fig) openLightbox(fig.dataset.src, fig.dataset.cap);
   });
-  document.addEventListener('keydown', (e) => {
+
+  document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeLightbox();
     if (lightbox.classList.contains('is-open')) return;
-    if (e.key === 'ArrowLeft') show(index - 1);
-    if (e.key === 'ArrowRight') show(index + 1);
+    if (e.key === 'ArrowLeft') showImage(currentIndex - 1);
+    if (e.key === 'ArrowRight') showImage(currentIndex + 1);
   });
+
 });

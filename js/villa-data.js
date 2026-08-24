@@ -1,73 +1,36 @@
-/**
- * Casa Vera Oasis — proje verileri
- * Tüm villa bilgileri tek yerden yönetilir.
- */
-
 export const VILLA_COUNT = 30;
 
-/** Villa numarasına göre net arsa alanı (m²). Resmî vaziyet planından gelir. */
-export const PLOTS = {
-  1: 416,
-  2: 405,  3: 405,  4: 405,  5: 405,  6: 405,
-  7: 405,  8: 405,  9: 405,  10: 405,
+export const PLOT_AREAS = {
+  1: 416, 2: 405, 3: 405, 4: 405, 5: 405, 6: 405, 7: 405, 8: 405, 9: 405, 10: 405,
   11: 409, 12: 409, 13: 409, 14: 409, 15: 409, 16: 409,
-  17: 418,
-  18: 416,
+  17: 418, 18: 416,
   19: 409, 20: 409, 21: 409, 22: 409, 23: 409, 24: 409,
-  25: 406,
-  26: 408, 27: 408,
-  28: 405,
-  29: 408,
-  30: 421,
+  25: 406, 26: 408, 27: 408, 28: 405, 29: 408, 30: 421
 };
 
-/**
- * Ana sayfadaki kuşbakışı görsel üzerindeki pin konumları: [soldan %, üstten %].
- * Yüzdeler .hero-image kutusuna göredir; kutunun en-boy oranı görselin
- * oranıyla (2048/1707) birebir aynı tutulmalıdır, yoksa pinler binalardan kayar.
- */
-export const HOTSPOTS = {
-  1:  [93.3, 27.3],
-  2:  [90.3, 30.0],
-  3:  [87.5, 32.9],
-  4:  [84.5, 36.4],
-  5:  [81.5, 40.8],
-  6:  [77.3, 45.6],
-  7:  [72.5, 51.3],
-  8:  [67.0, 56.1],
-  9:  [60.0, 65.7],
-  10: [51.3, 76.2],
-  11: [34.0, 67.8],
-  12: [44.8, 57.6],
-  13: [54.0, 50.0],
-  14: [60.7, 44.4],
-  15: [66.5, 39.3],
-  16: [76.0, 31.1],
-  17: [79.3, 27.9],
-  18: [62.5, 27.3],
-  19: [58.5, 29.7],
-  20: [54.3, 32.7],
-  21: [49.5, 35.7],
-  22: [43.5, 39.6],
-  23: [36.0, 44.4],
-  24: [28.7, 48.9],
-  25: [20.5, 54.5],
-
-  // --- Arka sıra: numaralar bir bina kaydırıldı ---------------------------
-  // En soldaki bina numarasız (bkz. UNNUMBERED), sıra bir yukarı ötelendi.
-  26: [25.0, 40.1],
-  27: [32.8, 35.8],
-  28: [39.3, 32.7],
-  29: [44.2, 29.9],
-  30: [48.2, 27.8], // yeni konum — görsel üzerinde teyit edilmeli
+// Villa numaralarının anasayfa hero görseli üzerindeki yüzde konumu.
+// Görsel oranı (2048/1707) hero kutusuyla aynı olduğu için yüzdeler her ekranda hizalı kalır.
+//
+// 26-30: arka sıranın numaralandırması bir bina kaymıştı; pinler bir konum
+// ötelendi. Sıranın en solundaki bina numarasız (bkz. UNNUMBERED_POINT),
+// 30 ise sıranın son binasına yerleşti.
+export const HERO_POINTS = {
+  1:  [93.3, 27.3],  2:  [90.3, 30.0],  3:  [87.5, 32.9],  4:  [84.5, 36.4],
+  5:  [81.5, 40.8],  6:  [77.3, 45.6],  7:  [72.5, 51.3],  8:  [67.0, 56.1],
+  9:  [60.0, 65.7],  10: [51.3, 76.2],  11: [34.0, 67.8],  12: [44.8, 57.6],
+  13: [54.0, 50.0],  14: [60.7, 44.4],  15: [66.5, 39.3],  16: [76.0, 31.1],
+  17: [79.3, 27.9],  18: [62.5, 27.3],  19: [58.5, 29.7],  20: [54.3, 32.7],
+  21: [49.5, 35.7],  22: [43.5, 39.6],  23: [36.0, 44.4],  24: [28.7, 48.9],
+  25: [20.5, 54.5],  26: [25.0, 40.1],  27: [32.8, 35.8],  28: [39.3, 32.7],
+  29: [44.2, 29.9],  30: [48.2, 27.8]
 };
 
-/** Satışa çıkmayacak villalar. */
+// Satışa çıkmayacak villalar.
 export const SOLD = new Set([10, 11, 25]);
 
-/** Numarası olmayan, satışa çıkmayacak bina (arka sıranın en solu). */
-export const UNNUMBERED = { pos: [13.3, 46.2] };
+// Arka sıranın en solundaki, numarası olmayan bina — o da satışa çıkmayacak.
+export const UNNUMBERED_POINT = [13.3, 46.2];
 
-export const villaUrl = (n) => `villa.html#v${String(n).padStart(2, '0')}`;
+export const villaHref = no => `villa.html#v${String(no).padStart(2, '0')}`;
 
-export const isSold = (n) => SOLD.has(Number(n));
+export const isSold = no => SOLD.has(Number(no));

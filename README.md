@@ -1,64 +1,51 @@
 # Casa Vera Oasis
 
-Assos (Behramkale / Ayvacık / Çanakkale) villa projesinin tanıtım sitesi.
-Derleme adımı yoktur — düz statik site (HTML + CSS + ES modülleri).
+Assos (Behramkale · Ayvacık · Çanakkale) villa projesinin tanıtım sitesi.
+Vite ile derlenen iki sayfalık statik site.
 
 Canlı: https://casa-vera-oasis.vercel.app
 
-## Yerelde çalıştırma
+## Geliştirme
 
 ```bash
-python3 -m http.server 8000
-# http://localhost:8000
+npm install
+npm run dev      # http://localhost:5173
+npm run build    # dist/ üretir
 ```
-
-Statik sunucu şart: sayfa ES modülü kullandığı için dosyayı doğrudan
-`file://` ile açmak çalışmaz.
 
 ## Dosya düzeni
 
 ```
 index.html          ana sayfa
 villa.html          villa detay sayfası
-css/main.css        ortak stiller + değişkenler
+css/style.css       ortak stiller
 css/villa.css       villa detay sayfası stilleri
-js/villa-data.js    TEK VERİ KAYNAĞI — pin konumları, arsa m², satılanlar
+js/villa-data.js    TEK VERİ KAYNAĞI — pin konumları, arsa m², satılan villalar
 js/main.js          ana sayfa davranışı
 js/villa.js         villa detay sayfası davranışı
-assets/img/         görseller
-scripts/fetch-images.sh   canlı siteden görselleri indirir
+assets/img/         Vite'ın işlediği görseller (hero, logolar, galeri)
+public/assets/img/  olduğu gibi kopyalanan villa görselleri (dis/ic + thumb)
+dist/               build çıktısı
 ```
 
-Villa numaraları, harita üzerindeki pin konumları ve satılan villalar
-**yalnızca `js/villa-data.js` içinde** tanımlıdır. Değişiklik gerektiğinde
-başka dosyaya dokunmaya gerek yoktur.
+## Sık yapılan değişiklikler
 
-## Görseller
+Villa numaraları, haritadaki pin konumları ve satılan villalar **yalnızca**
+`js/villa-data.js` içinde tanımlıdır:
 
-Depoda şu an yalnızca `assets/img/hero-master.webp` var. Kalan 126 görsel
-canlı siteden indirilmelidir:
+- `HERO_POINTS` — her villanın kuşbakışı görsel üzerindeki `[soldan %, üstten %]` konumu
+- `SOLD` — satışa çıkmayacak villa numaraları
+- `UNNUMBERED_POINT` — numarası olmayan binanın konumu
+- `PLOT_AREAS` — net arsa alanları
 
-```bash
-bash scripts/fetch-images.sh
-```
+Villa görsellerinin sayısı değişirse `js/villa.js` içindeki `DIS_COUNT` /
+`IC_COUNT` sabitlerini de güncelleyin.
 
-Beklenen yapı (toplam 127 dosya):
-
-| Yol | Adet |
-|---|---|
-| `assets/img/hero-master.webp` | 1 |
-| `assets/img/logo-casa-vera.png`, `logo-tmo.png` | 2 |
-| `assets/img/{teras-manzara,villa-bahce,salon,havuz-yuzme,gece-giris,yatak-odasi,mutfak}.webp` | 7 |
-| `assets/img/villa-aksam.jpg` | 1 |
-| `assets/img/dis/dis-01..38.webp` + `dis/thumb/` | 76 |
-| `assets/img/ic/ic-01..20.webp` + `ic/thumb/` | 40 |
-
-Görsel sayısını değiştirirseniz `js/villa.js` içindeki `SETS` sabitini de
-güncelleyin (`dis: 38`, `ic: 20`).
+> Hero kutusunun en-boy oranı görselin oranıyla (2048/1707) birebir aynı
+> olmalıdır. Oran bozulursa yüzdeyle konumlanan pinler binaların üstünden
+> kayar — `css/style.css` içindeki `.hero-image` kuralına dikkat edin.
 
 ## Yayına alma
 
-Vercel projesi `casa-vera-oasis`, bu depoya bağlıdır. Derleme ayarı
-gerekmez — framework yok, çıktı dizini deponun kökü.
-
-> Görseller eksikken deploy etmeyin; site görselsiz yayına girer.
+Vercel projesi `casa-vera-oasis` bu depoya bağlıdır. Derleme ayarı
+`vercel.json` içinde açıkça belirtilmiştir (`npm run build` → `dist`).
