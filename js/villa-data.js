@@ -1,5 +1,9 @@
 export const VILLA_COUNT = 30;
 
+// Satışı kapalı villalar. Numarasız villa ayrıca hero üzerinde işaretlenir.
+export const SOLD_VILLAS = new Set([10, 11, 25]);
+export const UNNUMBERED_SOLD_POINT = [13.3, 46.2];
+
 export const PLOT_AREAS = {
   1: 416, 2: 405, 3: 405, 4: 405, 5: 405, 6: 405, 7: 405, 8: 405, 9: 405, 10: 405,
   11: 409, 12: 409, 13: 409, 14: 409, 15: 409, 16: 409,
@@ -10,10 +14,6 @@ export const PLOT_AREAS = {
 
 // Villa numaralarının anasayfa hero görseli üzerindeki yüzde konumu.
 // Görsel oranı (2048/1707) hero kutusuyla aynı olduğu için yüzdeler her ekranda hizalı kalır.
-//
-// 26-30: arka sıranın numaralandırması bir bina kaymıştı; pinler bir konum
-// ötelendi. Sıranın en solundaki bina numarasız (bkz. UNNUMBERED_POINT),
-// 30 ise sıranın son binasına yerleşti.
 export const HERO_POINTS = {
   1:  [93.3, 27.3],  2:  [90.3, 30.0],  3:  [87.5, 32.9],  4:  [84.5, 36.4],
   5:  [81.5, 40.8],  6:  [77.3, 45.6],  7:  [72.5, 51.3],  8:  [67.0, 56.1],
@@ -22,15 +22,7 @@ export const HERO_POINTS = {
   17: [79.3, 27.9],  18: [62.5, 27.3],  19: [58.5, 29.7],  20: [54.3, 32.7],
   21: [49.5, 35.7],  22: [43.5, 39.6],  23: [36.0, 44.4],  24: [28.7, 48.9],
   25: [20.5, 54.5],  26: [25.0, 40.1],  27: [32.8, 35.8],  28: [39.3, 32.7],
-  29: [44.2, 29.9],  30: [48.2, 27.8]
+  29: [44.2, 29.9],  30: [48.3, 25.7]
 };
 
-// Satışa çıkmayacak villalar.
-export const SOLD = new Set([10, 11, 25]);
-
-// Arka sıranın en solundaki, numarası olmayan bina — o da satışa çıkmayacak.
-export const UNNUMBERED_POINT = [13.3, 46.2];
-
 export const villaHref = no => `villa.html#v${String(no).padStart(2, '0')}`;
-
-export const isSold = no => SOLD.has(Number(no));
