@@ -1,7 +1,7 @@
 export const VILLA_COUNT = 30;
 
 // Satışı kapalı villalar. Numarasız villa ayrıca hero üzerinde işaretlenir.
-export const SOLD_VILLAS = new Set([10, 11, 25]);
+export const SOLD_VILLAS = new Set([9, 10, 11, 12, 25]);
 export const UNNUMBERED_SOLD_POINT = [13.3, 46.2];
 
 export const PLOT_AREAS = {
