@@ -161,4 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'ArrowRight') showImage(currentIndex + 1);
   });
 
+  document.addEventListener('click', e => {
+    const link = e.target.closest('a[href^="tel:"], a[href*="wa.me"], .quote-btn, a.btn.full, .villa-cta a.btn');
+    if (!link) return;
+    if (link.matches('a[href^="tel:"]')) window.gtag?.('event', 'generate_lead', { method: 'phone_click' });
+    else if (link.matches('a[href*="wa.me"]')) window.gtag?.('event', 'generate_lead', { method: 'whatsapp_click' });
+    else window.gtag?.('event', 'generate_lead', { method: 'villa_cta_click' });
+  });
+
 });
