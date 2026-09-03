@@ -83,7 +83,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const text = lang === 'tr'
       ? `Casa Vera Oasis bilgi talebi\nAd Soyad: ${name}\nTelefon: ${phone}\nMesaj: ${message}`
       : `Casa Vera Oasis information request\nName: ${name}\nPhone: ${phone}\nMessage: ${message}`;
+    window.gtag?.('event', 'generate_lead', { method: 'contact_form' });
     window.open(`https://wa.me/905322181184?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+  });
+
+  document.addEventListener('click', e => {
+    const link = e.target.closest('a[href^="tel:"], a[href*="wa.me"]');
+    if (!link) return;
+    if (link.href.startsWith('tel:')) window.gtag?.('event', 'generate_lead', { method: 'phone_click' });
+    else window.gtag?.('event', 'generate_lead', { method: 'whatsapp_click' });
   });
 
   const observer = new IntersectionObserver(entries => entries.forEach(entry => {
