@@ -1,4 +1,9 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "alias": [
+    "casa-vera-oasis.vercel.app",
+    "www.casaveraoasis.com",
+    "casaveraoasis.com"
+  ]
 }
