@@ -3,7 +3,7 @@
 
 :root{
   --cream-2: var(--cream);
-  --serif: "Cormorant Garamond", Georgia, serif;
+  --serif: "Poppins", Arial, sans-serif;
   --muted: #5d655d;
   --accent: var(--green);
   --accent-deep: var(--bronze);
