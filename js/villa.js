@@ -100,39 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('viewerPrev').addEventListener('click', () => showImage(currentIndex - 1));
   document.getElementById('viewerNext').addEventListener('click', () => showImage(currentIndex + 1));
 
-  function buildGrid(container, set){
-    const { count, label } = SETS[set];
-    container.innerHTML = Array.from({ length: count }, (_, i) => {
-      const n = i + 1;
-      return `<figure data-src="${src(set, n)}" data-cap="${label} ${n}">
-                <img data-src="${thumbSrc(set, n)}" alt="${label} ${n}">
-              </figure>`;
-    }).join('');
-  }
-  buildGrid(document.getElementById('gridDis'), 'dis');
-  buildGrid(document.getElementById('gridIc'), 'ic');
-
-  const imgObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      const img = entry.target;
-      img.src = img.dataset.src;
-      img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
-      imgObserver.unobserve(img);
-    });
-  }, { rootMargin: '200px' });
-  document.querySelectorAll('.villa-grid img[data-src]').forEach(img => imgObserver.observe(img));
-
-  document.querySelectorAll('#villaTabs button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#villaTabs button').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      document.querySelectorAll('.villa-grid-wrap').forEach(w => {
-        w.classList.toggle('active', w.dataset.tabPanel === btn.dataset.tab);
-      });
-    });
-  });
-
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightboxImg');
   const lightboxCap = document.getElementById('lightboxCap');
@@ -149,9 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('viewerFull').addEventListener('click', () => {
     openLightbox(viewerImg.src, `${SETS[currentSet].label} ${currentIndex}`);
   });
-  document.addEventListener('click', e => {
-    const fig = e.target.closest('.villa-grid figure');
-    if (fig) openLightbox(fig.dataset.src, fig.dataset.cap);
+  viewerImg.addEventListener('click', () => {
+    openLightbox(viewerImg.src, `${SETS[currentSet].label} ${currentIndex}`);
   });
 
   document.addEventListener('keydown', e => {
@@ -168,5 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (link.matches('a[href*="wa.me"]')) window.gtag?.('event', 'generate_lead', { method: 'whatsapp_click' });
     else window.gtag?.('event', 'generate_lead', { method: 'villa_cta_click' });
   });
+
+  const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+    if (entry.isIntersecting) { entry.target.classList.add('visible'); revealObserver.unobserve(entry.target); }
+  }), {threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
 });
