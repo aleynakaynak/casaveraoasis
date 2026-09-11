@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let lang = 'tr';
 
   const addCatalogLinks = () => {
-    const catalogPdf = '/api/catalog-pdf';
+    const catalogPdf = '/katalog-casa-vera-oasis.pdf';
     const desktopNav = document.querySelector('.desktop-nav');
     if (desktopNav && !desktopNav.querySelector('.catalog-nav-btn')) {
       const link = document.createElement('a');
