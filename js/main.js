@@ -13,26 +13,31 @@ document.addEventListener('DOMContentLoaded', () => {
   let lang = 'tr';
 
   const addCatalogLinks = () => {
+    const catalogPdf = '/CASA-VERA-OASIS-TR-2.pdf';
     const desktopNav = document.querySelector('.desktop-nav');
     if (desktopNav && !desktopNav.querySelector('.catalog-nav-btn')) {
       const link = document.createElement('a');
-      link.href = 'catalog.html';
+      link.href = catalogPdf;
+      link.target = '_blank';
+      link.rel = 'noopener';
       link.className = 'catalog-nav-btn';
       link.dataset.tr = 'Katalog';
       link.dataset.en = 'Catalogue';
       link.textContent = 'Katalog';
-      link.setAttribute('aria-label', 'Casa Vera Oasis kataloğunu görüntüle');
+      link.setAttribute('aria-label', 'Casa Vera Oasis PDF kataloğunu görüntüle');
       desktopNav.appendChild(link);
     }
     const mobileNav = mobileMenu?.querySelector('nav');
     if (mobileNav && !mobileNav.querySelector('.catalog-mobile-btn')) {
       const link = document.createElement('a');
-      link.href = 'catalog.html';
+      link.href = catalogPdf;
+      link.target = '_blank';
+      link.rel = 'noopener';
       link.className = 'catalog-mobile-btn';
       link.dataset.tr = 'Katalog';
       link.dataset.en = 'Catalogue';
       link.textContent = 'Katalog';
-      link.setAttribute('aria-label', 'Casa Vera Oasis kataloğunu görüntüle');
+      link.setAttribute('aria-label', 'Casa Vera Oasis PDF kataloğunu görüntüle');
       mobileNav.appendChild(link);
     }
   };
