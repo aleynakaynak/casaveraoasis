@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let lang = 'tr';
 
   const addCatalogLinks = () => {
-    const catalogPdf = '/CASA-VERA-OASIS-TR-2.pdf';
+    const catalogPdf = '/api/catalog-pdf';
     const desktopNav = document.querySelector('.desktop-nav');
     if (desktopNav && !desktopNav.querySelector('.catalog-nav-btn')) {
       const link = document.createElement('a');
