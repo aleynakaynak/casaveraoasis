@@ -1,5 +1,6 @@
 import '../css/overrides.css';
 import '../css/mobile-pin-fixes.css';
+import '../css/catalog-nav.css';
 import { VILLA_COUNT, PLOT_AREAS, HERO_POINTS, SOLD_VILLAS, UNNUMBERED_SOLD_POINT, villaHref } from './villa-data.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -10,6 +11,32 @@ document.addEventListener('DOMContentLoaded', () => {
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightboxImg');
   let lang = 'tr';
+
+  const addCatalogLinks = () => {
+    const desktopNav = document.querySelector('.desktop-nav');
+    if (desktopNav && !desktopNav.querySelector('.catalog-nav-btn')) {
+      const link = document.createElement('a');
+      link.href = 'catalog.html';
+      link.className = 'catalog-nav-btn';
+      link.dataset.tr = 'Katalog';
+      link.dataset.en = 'Catalogue';
+      link.textContent = 'Katalog';
+      link.setAttribute('aria-label', 'Casa Vera Oasis kataloğunu görüntüle');
+      desktopNav.appendChild(link);
+    }
+    const mobileNav = mobileMenu?.querySelector('nav');
+    if (mobileNav && !mobileNav.querySelector('.catalog-mobile-btn')) {
+      const link = document.createElement('a');
+      link.href = 'catalog.html';
+      link.className = 'catalog-mobile-btn';
+      link.dataset.tr = 'Katalog';
+      link.dataset.en = 'Catalogue';
+      link.textContent = 'Katalog';
+      link.setAttribute('aria-label', 'Casa Vera Oasis kataloğunu görüntüle');
+      mobileNav.appendChild(link);
+    }
+  };
+  addCatalogLinks();
 
   const closeMenu = () => {
     mobileMenu.classList.remove('open');

@@ -6,7 +6,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        villa: resolve(__dirname, 'villa.html')
+        villa: resolve(__dirname, 'villa.html'),
+        catalog: resolve(__dirname, 'catalog.html')
       }
     }
   }
