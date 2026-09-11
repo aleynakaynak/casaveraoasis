@@ -6,6 +6,10 @@
     "dev": "vite",
     "build": "vite build"
   },
+  "dependencies": {
+    "@sparticuz/chromium": "^140.0.0",
+    "puppeteer-core": "^24.16.0"
+  },
   "devDependencies": {
     "vite": "^7.1.1"
   }
